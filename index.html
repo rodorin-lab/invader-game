@@ -49,7 +49,7 @@ canvas{border:2px solid rgba(168,140,255,0.5);border-radius:10px;box-shadow:0 0 
 .touch-zone{
   position:relative;border-radius:12px;border:2px solid rgba(168,140,255,0.25);
   background:rgba(168,140,255,0.04);display:flex;flex-direction:column;
-  align-items:center;justify-content:center;user-select:none;touch-action:manipulation;
+  align-items:center;justify-content:center;user-select:none;touch-action:none;
   overflow:hidden;transition:all 0.2s;
 }
 .touch-zone.touched{background:rgba(168,140,255,0.12);box-shadow:0 0 18px rgba(212,165,255,0.2)}
@@ -66,7 +66,7 @@ canvas{border:2px solid rgba(168,140,255,0.5);border-radius:10px;box-shadow:0 0 
 .touch-btn{
   width:48px;height:48px;background:rgba(168,140,255,0.12);border:2px solid rgba(168,140,255,0.3);
   border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:1.1em;color:#d4a5ff;touch-action:manipulation;cursor:pointer;transition:all 0.12s;
+  font-size:1.1em;color:#d4a5ff;touch-action:none;cursor:pointer;transition:all 0.12s;
 }
 .touch-btn:active{transform:scale(0.88);background:rgba(168,140,255,0.25);box-shadow:0 0 15px rgba(168,140,255,0.3)}
 .touch-fire-btn{background:rgba(255,107,157,0.15);border-color:#ff6b9d;font-size:1.3em}
@@ -78,7 +78,7 @@ canvas{border:2px solid rgba(168,140,255,0.5);border-radius:10px;box-shadow:0 0 
   display:block;width:200px;padding:14px 0;margin:8px auto 4px;
   background:linear-gradient(135deg,#ff6b9d,#d4a5ff);border:2px solid rgba(212,165,255,0.5);
   border-radius:25px;color:#fff;font-size:1.1em;font-weight:bold;text-align:center;
-  cursor:pointer;touch-action:manipulation;z-index:10;
+  cursor:pointer;touch-action:none;z-index:10;
   box-shadow:0 0 20px rgba(212,165,255,0.4);
   animation:startPulse 1.5s ease infinite;
 }
