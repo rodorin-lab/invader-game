@@ -18,6 +18,9 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
 @keyframes h1a{0%{background-position:0% center}50%{background-position:100% center}100%{background-position:0% center}}
 .lang-btn{background:rgba(168,140,255,0.15);border:1px solid rgba(168,140,255,0.4);color:#d4a5ff;padding:2px 7px;border-radius:10px;cursor:pointer;font-size:clamp(0.5em,1.8vw,0.65em);white-space:nowrap}
 .lang-btn.active,.lang-btn:active{background:rgba(168,140,255,0.4);border-color:#d4a5ff;box-shadow:0 0 10px rgba(168,140,255,0.3)}
+#muteBtn{background:rgba(168,140,255,0.12);border:1px solid rgba(168,140,255,0.3);color:#d4a5ff;padding:2px 6px;border-radius:10px;cursor:pointer;font-size:clamp(0.5em,1.8vw,0.65em);white-space:nowrap;transition:all 0.2s}
+#muteBtn.muted{background:rgba(255,23,68,0.15);border-color:rgba(255,23,68,0.4);color:#ff6b9d}
+#muteBtn:active{transform:scale(0.9)}
 #app{position:relative;width:100%;max-width:420px;flex:1;display:flex;flex-direction:column;padding:0 4px;gap:2px;overflow:hidden;z-index:1}
 #cw{position:relative;flex:1;min-height:0;border-radius:8px;overflow:hidden;border:2px solid rgba(168,140,255,0.5)}
 #cw canvas{width:100%!important;height:100%!important;display:block;background:#050010}
@@ -64,7 +67,11 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backg
 <body>
 <div class="header">
   <h1>🦋グラムちゃん・サイバー・インベーダー👾</h1>
-  <div><button class="lang-btn active" id="bj">🇯🇵JP</button><button class="lang-btn" id="be">🇬🇧EN</button></div>
+  <div>
+    <button class="lang-btn active" id="bj">🇯🇵JP</button>
+    <button class="lang-btn" id="be">🇬🇧EN</button>
+    <button id="muteBtn">🔊</button>
+  </div>
 </div>
 <div id="app">
   <div id="cw">
@@ -114,9 +121,23 @@ document.getElementById('bj').addEventListener('click',()=>setL('ja'));
 document.getElementById('be').addEventListener('click',()=>setL('en'));
 
 // audio
-let A=null;
+let A=null,muted=false;
 function iA(){if(!A)A=new(window.AudioContext||window.webkitAudioContext)()}
-function t(f,d,ty){if(!A)return;const o=A.createOscillator(),g=A.createGain();o.type=ty||'square';o.frequency.value=f;g.gain.setValueAtTime(0.2,A.currentTime);g.gain.exponentialRampToValueAtTime(0.001,A.currentTime+(d||0.1));o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+(d||0.1))}
+
+// mute toggle (after muted declaration!)
+const muteBtn=document.getElementById('muteBtn');
+muteBtn.addEventListener('click',()=>{
+  muted=!muted;
+  muteBtn.textContent=muted?'🔇':'🔊';
+  muteBtn.classList.toggle('muted',muted);
+  if(muted){bP();}else if(st===ST.P){bS();}
+});
+function t(f,d,ty){
+  if(!A||muted)return;
+  const o=A.createOscillator(),g=A.createGain();o.type=ty||'square';o.frequency.value=f;
+  g.gain.setValueAtTime(0.2,A.currentTime);g.gain.exponentialRampToValueAtTime(0.001,A.currentTime+(d||0.1));
+  o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+(d||0.1))
+}
 function sS(){t(880,0.05);setTimeout(()=>t(660,0.03),20)}
 function sH(){t(200,0.08,'sawtooth')}
 function sE(){for(let i=0;i<5;i++)setTimeout(()=>t(100+Math.random()*200,0.1,'sawtooth'),i*30)}
