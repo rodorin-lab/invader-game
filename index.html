@@ -145,7 +145,96 @@ function sP(){t(523,0.1);setTimeout(()=>t(659,0.1),80);setTimeout(()=>t(784,0.15
 function sG2(){t(400,0.2);setTimeout(()=>t(300,0.2),200);setTimeout(()=>t(200,0.4),400)}
 function sW(){t(523,0.1);setTimeout(()=>t(659,0.1),100);setTimeout(()=>t(784,0.1),200);setTimeout(()=>t(1047,0.3),300)}
 let BM=false,BT=null;
-function bS(){if(!A||BM)return;BM=true;const b=[110,110,147,147,165,165,147,147,110,110,131,131,147,147,131,131],m=[440,440,523,523,587,587,659,659,784,659,587,523,440,523,587,440];let be=0;BT=setInterval(()=>{if(!BM){clearInterval(BT);return}t(b[be%16],0.12,'triangle');if(be%4===0)t(m[be%16],0.1);be++},150)}
+function bS(){
+  if(!A||BM)return;BM=true;
+  // 🎵 CATCHY CHIPTUNE BGM - 4-bar loop: Am-F-C-G progression
+  const bass=[
+    110,110,110,110, 87.31,87.31,87.31,87.31, // Am | F
+    130.81,130.81,130.81,130.81, 98,98,98,98, // C  | G
+    110,110,110,110, 87.31,87.31,87.31,87.31, // Am | F
+    130.81,130.81,98,98, 110,110,110,110       // C G | Am
+  ];
+  // Arp melody (square wave) - catchy hook!
+  const melody=[
+    // Bar 1 - Am arp
+    440,523,659,523, 440,523,659,784,  // A4 C5 E5 C5 | A4 C5 E5 G5
+    // Bar 2 - F arp  
+    698,523,659,523, 698,523,659,784,  // F5 C5 E5 C5 | F5 C5 E5 G5
+    // Bar 3 - C arp
+    523,659,784,1047, 523,659,784,659,  // C5 E5 G5 C6 | C5 E5 G5 E5
+    // Bar 4 - G arp leading back
+    392,523,659,784, 440,523,659,523   // G4 C5 E5 G5 | A4 C5 E5 C5
+  ];
+  // Percussion (short noise blips on off-beats)
+  const perc=[0,1,0,1, 0,1,0,1, 0,1,0,1, 0,1,0,1,
+              0,1,0,1, 0,1,0,1, 0,1,0,1, 0,1,0,1];
+  // Arpeggio chord overlay (triangle, softer) - fills the gaps
+  const chordPad=[
+    // Am chord (A C E)
+    220,262,330,262, 220,262,330,262,
+    // F chord (F A C)
+    175,220,262,220, 175,220,262,220,
+    // C chord (C E G)
+    262,330,392,330, 262,330,392,330,
+    // G chord (G B D) ... let's use G Bb D for minor feel or G B D for major
+    // Actually G major (G B D) - but Am-F-C-G is classic
+    196,247,294,247, 196,247,294,247,
+    // Repeat
+    220,262,330,262, 220,262,330,262,
+    175,220,262,220, 175,220,262,220,
+    262,330,392,330, 262,330,392,330,
+    // G7 to Am (G B D F) -> resolves to Am
+    196,247,294,349, 220,262,330,262
+  ];
+  // Second melody (counter-melody, plays on repeat)
+  const melody2=[
+    784,784,659,659, 523,523,659,659,  // G5 G5 E5 E5 | C5 C5 E5 E5
+    698,698,523,523, 659,659,523,587,  // F5 F5 C5 C5 | E5 E5 C5 D5
+    1047,1047,784,784, 659,659,784,784, // C6 C6 G5 G5 | E5 E5 G5 G5
+    784,784,659,587, 523,659,784,659   // G5 G5 E5 D5 | C5 E5 G5 E5
+  ];
+  let beat=0,melodySet=0;
+  const beatLen=180; // slightly slower for groove
+  
+  BT=setInterval(()=>{
+    if(!BM){clearInterval(BT);return}
+    
+    // Switch melody every 2 loops (32 beats)
+    if(beat>0&&beat%32===0){melodySet=(melodySet+1)%3}
+    
+    const idx=beat%32;
+    const bassIdx=beat%bass.length;
+    
+    // Bass - every beat (triangle)
+    t(bass[bassIdx],0.14,'triangle');
+    
+    // Melody note on main beats (0,4,8,12,16,20,24,28) + some offbeats
+    if(idx%2===0||idx%4===3){
+      let mel;
+      if(melodySet===0)mel=melody[beat%melody.length];
+      else if(melodySet===1)mel=melody2[beat%melody2.length];
+      else mel=melody[beat%melody.length];
+      t(mel,0.1,'square');
+    }
+    
+    // Chord pad on beats 0 and 2 of each 4-beat group
+    if(idx%4===0||idx%4===2){
+      const ci=beat%chordPad.length;
+      t(chordPad[ci],0.2,'triangle');
+    }
+    
+    // Percussion on offbeats
+    if(perc[idx%perc.length])t(50+Math.random()*30,0.03,'sawtooth');
+    
+    // Every 4 beats - accent chord
+    if(idx%4===0){
+      const ci=beat%chordPad.length;
+      t(chordPad[ci]*2,0.06,'square');
+    }
+    
+    beat++;
+  },beatLen);
+}
 function bP(){BM=false;if(BT){clearInterval(BT);BT=null}}
 
 // game state
