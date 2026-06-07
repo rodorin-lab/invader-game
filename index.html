@@ -7,77 +7,184 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{
-  background:linear-gradient(135deg,#1a0033,#0d0021,#1a0033);
+  background:linear-gradient(135deg,#0a001a,#15002b,#0a001a);
   color:#e0d4ff;font-family:'Courier New',monospace;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   min-height:100vh;overflow-x:hidden;position:relative;
-  touch-action:none;-webkit-user-select:none;user-select:none
+  touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none
 }
+/* === ANIMATED GLITCHY BACKGROUND === */
 body::before{
   content:'';position:fixed;top:0;left:0;width:100%;height:100%;
-  background-image:radial-gradient(2px 2px at 20px 30px,#d4a5ff,transparent),radial-gradient(2px 2px at 40px 70px,#a88cff,transparent),radial-gradient(1px 1px at 90px 40px,#fff,transparent);
-  background-repeat:repeat;background-size:200px 200px;opacity:0.25;pointer-events:none;z-index:0
+  background:
+    radial-gradient(2px 2px at 10% 30%,#d4a5ff,transparent),
+    radial-gradient(3px 3px at 50% 60%,#ff6b9d,transparent),
+    radial-gradient(2px 2px at 80% 20%,#76ff03,transparent),
+    radial-gradient(2px 2px at 30% 80%,#00e5ff,transparent),
+    radial-gradient(1px 1px at 90% 70%,#fff,transparent);
+  background-repeat:repeat;background-size:300px 300px;opacity:0.3;pointer-events:none;z-index:0;
+  animation:bgDrift 20s linear infinite;
 }
-.header{z-index:1;text-align:center;padding:8px 15px;width:100%;display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap}
-h1{font-size:clamp(1em,3.5vw,2em);background:linear-gradient(90deg,#d4a5ff,#ff6b9d,#ffd700,#d4a5ff);background-size:200% auto;
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradientShift 3s ease infinite}
+@keyframes bgDrift{0%{background-position:0 0}100%{background-position:300px 300px}}
+body::after{
+  content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.08) 2px,rgba(0,0,0,0.08) 4px);
+  pointer-events:none;z-index:0;opacity:0.5;
+}
+
+/* === HEADER === */
+.header{z-index:2;text-align:center;padding:6px 12px;width:100%;display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap}
+h1{font-size:clamp(0.9em,3vw,1.6em);background:linear-gradient(90deg,#d4a5ff,#ff6b9d,#ffd700,#76ff03,#d4a5ff);background-size:300% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradientShift 4s ease infinite;
+  text-shadow:0 0 30px rgba(212,165,255,0.3);letter-spacing:2px}
 @keyframes gradientShift{0%{background-position:0% center}50%{background-position:100% center}100%{background-position:0% center}}
-.lang-btn{background:rgba(168,140,255,0.2);border:1px solid rgba(168,140,255,0.5);color:#d4a5ff;padding:4px 10px;border-radius:12px;cursor:pointer;font-size:0.75em;transition:all 0.2s}
-.lang-btn.active,.lang-btn:hover{background:rgba(168,140,255,0.5);box-shadow:0 0 12px rgba(168,140,255,0.5)}
-.game-container{z-index:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 5px}
-canvas{border:2px solid #a88cff;border-radius:8px;box-shadow:0 0 20px rgba(168,140,255,0.4),0 0 40px rgba(168,140,255,0.2);background:#0d001a;max-width:98vw;max-height:65vh;touch-action:none;display:block}
-.ui-panel{display:flex;justify-content:space-around;width:100%;padding:5px 8px;background:rgba(168,140,255,0.08);border:1px solid rgba(168,140,255,0.2);border-radius:6px;gap:3px;flex-wrap:wrap}
-.ui-item{text-align:center;min-width:50px}
-.ui-label{font-size:0.6em;color:#a88cff;text-transform:uppercase;letter-spacing:1px}
-.ui-value{font-size:clamp(0.8em,2.5vw,1.2em);font-weight:bold;color:#d4a5ff}
-.powerup-bar{display:flex;gap:5px;align-items:center;padding:3px 8px;background:rgba(168,140,255,0.05);border-radius:12px}
-.powerup-icon{width:28px;height:28px;border:2px solid rgba(168,140,255,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85em;opacity:0.3;transition:all 0.3s}
-.powerup-icon.active{opacity:1;border-color:#d4a5ff;box-shadow:0 0 12px rgba(212,165,255,0.5);animation:pulse 0.8s infinite}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
-.footer{font-size:0.65em;color:rgba(168,140,255,0.5);z-index:1;text-align:center;padding:3px}
-.touch-controls{display:flex;gap:6px;justify-content:center;width:100%;max-width:400px;z-index:1;flex-wrap:wrap}
-.touch-zone{
-  position:relative;border-radius:12px;border:2px solid rgba(168,140,255,0.3);
-  background:rgba(168,140,255,0.06);display:flex;flex-direction:column;
-  align-items:center;justify-content:center;user-select:none;-webkit-user-select:none;
-  touch-action:none;overflow:hidden;
+.lang-btn{background:rgba(168,140,255,0.15);border:1px solid rgba(168,140,255,0.4);color:#d4a5ff;padding:3px 10px;border-radius:12px;cursor:pointer;font-size:0.7em;transition:all 0.3s;text-transform:uppercase;letter-spacing:1px}
+.lang-btn.active,.lang-btn:hover{background:rgba(168,140,255,0.4);border-color:#d4a5ff;box-shadow:0 0 15px rgba(168,140,255,0.4)}
+
+/* === GAME CONTAINER === */
+.game-container{z-index:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:0 4px;width:100%;max-width:420px}
+
+/* === CANVAS === */
+canvas{
+  border:2px solid rgba(168,140,255,0.6);border-radius:10px;
+  box-shadow:0 0 15px rgba(168,140,255,0.3),0 0 45px rgba(168,140,255,0.1),inset 0 0 30px rgba(168,140,255,0.03);
+  background:#050010;max-width:98vw;max-height:62vh;touch-action:manipulation;
+  display:block;position:relative;z-index:1;
+  animation:canvasGlow 3s ease-in-out infinite alternate;
 }
-.left-zone{width:48%;height:64px}
-.right-zone{width:48%;height:64px}
-.zone-label{font-size:0.65em;color:rgba(168,140,255,0.5);pointer-events:none}
-.touch-joystick{font-size:1.5em;color:#d4a5ff;transition:transform 0.1s;pointer-events:none}
+@keyframes canvasGlow{0%{box-shadow:0 0 15px rgba(168,140,255,0.3),0 0 30px rgba(168,140,255,0.1)}100%{box-shadow:0 0 25px rgba(168,140,255,0.5),0 0 60px rgba(168,140,255,0.15)}}
+
+/* === HUD PANEL — GLASSMORPHISM === */
+.ui-panel{
+  display:flex;justify-content:space-around;width:100%;padding:6px 6px;
+  background:rgba(168,140,255,0.06);border:1px solid rgba(168,140,255,0.15);
+  border-radius:10px;gap:2px;flex-wrap:wrap;
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+}
+.ui-item{text-align:center;min-width:44px;padding:2px 4px;border-radius:6px;transition:all 0.3s}
+.ui-item:hover{background:rgba(168,140,255,0.05)}
+.ui-label{font-size:0.55em;color:#a88cff;text-transform:uppercase;letter-spacing:1.5px;opacity:0.7}
+.ui-value{font-size:clamp(0.85em,2.8vw,1.2em);font-weight:bold;color:#d4a5ff;text-shadow:0 0 10px rgba(212,165,255,0.4)}
+#scoreDisplay{color:#ffd700;text-shadow:0 0 15px rgba(255,215,0,0.5)}
+#highDisplay{color:#ff6b9d;text-shadow:0 0 12px rgba(255,107,157,0.4)}
+#waveDisplay{color:#00e5ff;text-shadow:0 0 12px rgba(0,229,255,0.4)}
+#comboDisplay{color:#76ff03;text-shadow:0 0 12px rgba(118,255,3,0.4)}
+#livesDisplay{color:#ff1744;text-shadow:0 0 12px rgba(255,23,68,0.4);letter-spacing:2px}
+
+/* === POWERUP BAR === */
+.powerup-bar{
+  display:flex;gap:4px;align-items:center;padding:3px 6px;
+  background:rgba(168,140,255,0.03);border:1px solid rgba(168,140,255,0.1);
+  border-radius:14px;width:auto;
+}
+.powerup-icon{
+  width:26px;height:26px;border:2px solid rgba(168,140,255,0.2);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:0.75em;
+  opacity:0.25;transition:all 0.4s;position:relative;
+}
+.powerup-icon.active{
+  opacity:1;border-color:#d4a5ff;
+  box-shadow:0 0 18px rgba(212,165,255,0.6),0 0 40px rgba(212,165,255,0.2);
+  animation:powerPulse 0.8s ease-in-out infinite;
+}
+@keyframes powerPulse{
+  0%,100%{transform:scale(1);box-shadow:0 0 18px rgba(212,165,255,0.6)}
+  50%{transform:scale(1.15);box-shadow:0 0 30px rgba(212,165,255,0.8),0 0 60px rgba(212,165,255,0.3)}
+}
+.powerup-icon#spreadIcon.active{border-color:#ff6b9d;box-shadow:0 0 18px rgba(255,107,157,0.6);animation-delay:0s}
+.powerup-icon#shieldIcon.active{border-color:#76ff03;box-shadow:0 0 18px rgba(118,255,3,0.6);animation-delay:0.1s}
+.powerup-icon#rapidIcon.active{border-color:#00e5ff;box-shadow:0 0 18px rgba(0,229,255,0.6);animation-delay:0.2s}
+.powerup-icon#megaIcon.active{border-color:#ffd700;box-shadow:0 0 18px rgba(255,215,0,0.6);animation-delay:0.3s}
+
+/* === TOUCH CONTROLS === */
+.touch-controls{display:flex;gap:6px;justify-content:center;width:100%;max-width:420px;z-index:2;flex-wrap:wrap}
+.touch-zone{
+  position:relative;border-radius:14px;border:2px solid rgba(168,140,255,0.25);
+  background:rgba(168,140,255,0.04);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;user-select:none;-webkit-user-select:none;
+  touch-action:none;overflow:hidden;transition:all 0.3s;
+}
+.touch-zone:active,.touch-zone.active{border-color:#d4a5ff;background:rgba(168,140,255,0.1);box-shadow:0 0 20px rgba(212,165,255,0.2)}
+.left-zone{width:48%;height:85px;z-index:5;border-color:rgba(168,140,255,0.3)}
+.left-zone:active,.left-zone.active{border-color:#d4a5ff}
+.right-zone{width:48%;height:85px;z-index:5;border-color:rgba(255,107,157,0.3)}
+.right-zone:active,.right-zone.active{border-color:#ff6b9d;background:rgba(255,107,157,0.08);box-shadow:0 0 20px rgba(255,107,157,0.2)}
+.zone-label{font-size:0.6em;color:rgba(168,140,255,0.4);pointer-events:none;letter-spacing:2px;margin-bottom:2px}
+.right-zone .zone-label{color:rgba(255,107,157,0.4)}
+.touch-joystick{font-size:1.2em;color:#d4a5ff;transition:transform 0.08s ease-out;pointer-events:none;opacity:0.7}
 .touch-fire-ring{
-  width:44px;height:44px;border-radius:50%;border:3px solid #ff6b9d;
-  display:flex;align-items:center;justify-content:center;font-size:1.5em;
-  background:rgba(255,107,157,0.15);box-shadow:0 0 15px rgba(255,107,157,0.3);
+  width:46px;height:46px;border-radius:50%;border:3px solid #ff6b9d;
+  display:flex;align-items:center;justify-content:center;font-size:1.4em;
+  background:rgba(255,107,157,0.12);box-shadow:0 0 18px rgba(255,107,157,0.25);
   transition:all 0.1s;pointer-events:none;
 }
-.touch-fire-ring:active,.touch-fire-ring.pressed{transform:scale(0.9);background:rgba(255,107,157,0.4)}
+.touch-fire-ring:active,.touch-fire-ring.pressed{
+  transform:scale(0.85);background:rgba(255,107,157,0.3);
+  box-shadow:0 0 30px rgba(255,107,157,0.5),0 0 60px rgba(255,107,157,0.2);
+}
+
+/* === BUTTON ROW — HOLOGRAPHIC STYLE === */
 .touch-buttons-row{
-  display:flex;gap:6px;justify-content:center;width:100%;max-width:400px;
+  display:flex;gap:6px;justify-content:center;width:100%;max-width:420px;
 }
 .touch-btn{
-  width:48px;height:48px;background:rgba(168,140,255,0.25);
-  border:2px solid rgba(168,140,255,0.5);border-radius:50%;
+  width:52px;height:52px;background:rgba(168,140,255,0.12);
+  border:2px solid rgba(168,140,255,0.3);border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  font-size:1.1em;color:#d4a5ff;touch-action:none;cursor:pointer
+  font-size:1.2em;color:#d4a5ff;touch-action:manipulation;cursor:pointer;
+  transition:all 0.15s;position:relative;overflow:hidden;
 }
-.touch-btn:active{background:rgba(168,140,255,0.5);box-shadow:0 0 15px rgba(168,140,255,0.5)}
-.touch-fire{background:rgba(255,107,157,0.35);border-color:#ff6b9d;font-size:1.3em}
-.touch-auto{width:44px;height:44px;background:rgba(255,215,0,0.15);border-color:#ffd700;font-size:0.9em}
-.touch-auto.active{background:rgba(255,215,0,0.4);box-shadow:0 0 12px #ffd700}
-.touch-bomb{width:44px;height:44px;background:rgba(255,23,68,0.15);border-color:#ff1744;font-size:1em}
+.touch-btn::before{
+  content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+  background:radial-gradient(circle,rgba(168,140,255,0.1),transparent 60%);
+  opacity:0;transition:opacity 0.3s;
+}
+.touch-btn:active::before{opacity:1}
+.touch-btn:active{
+  transform:scale(0.88);background:rgba(168,140,255,0.25);
+  box-shadow:0 0 20px rgba(168,140,255,0.4),0 0 40px rgba(168,140,255,0.15);
+}
+.touch-fire{background:rgba(255,107,157,0.15);border-color:#ff6b9d;font-size:1.4em}
+.touch-fire:active{background:rgba(255,107,157,0.35);box-shadow:0 0 20px rgba(255,107,157,0.5),0 0 50px rgba(255,107,157,0.2)}
+.touch-auto{width:48px;height:48px;background:rgba(255,215,0,0.08);border-color:rgba(255,215,0,0.4);font-size:1em}
+.touch-auto.active{background:rgba(255,215,0,0.25);border-color:#ffd700;box-shadow:0 0 15px #ffd700,0 0 30px rgba(255,215,0,0.2);animation:autoGlow 1s ease-in-out infinite alternate}
+@keyframes autoGlow{0%{box-shadow:0 0 10px #ffd700}100%{box-shadow:0 0 25px #ffd700,0 0 50px rgba(255,215,0,0.3)}}
+.touch-bomb{width:48px;height:48px;background:rgba(255,23,68,0.08);border-color:rgba(255,23,68,0.4);font-size:1.1em}
+.touch-bomb:active{background:rgba(255,23,68,0.3);box-shadow:0 0 20px rgba(255,23,68,0.5)}
+
+/* === START BUTTON — MEGA GLOW === */
 .mobile-start-btn{
-  display:block;width:200px;padding:14px 0;margin:8px auto 4px;
-  background:linear-gradient(135deg,#ff6b9d,#d4a5ff);border:2px solid #d4a5ff;
-  border-radius:25px;color:#fff;font-size:1.1em;font-weight:bold;
-  text-align:center;cursor:pointer;touch-action:none;
-  box-shadow:0 0 20px rgba(212,165,255,0.5);
-  animation:mobPulse 1.5s ease infinite;
+  display:block;width:220px;padding:16px 0;margin:8px auto 4px;
+  background:linear-gradient(135deg,#ff6b9d,#d4a5ff,#76ff03);
+  background-size:200% 200%;animation:startGradient 3s ease infinite;
+  border:2px solid rgba(212,165,255,0.6);
+  border-radius:30px;color:#fff;font-size:1.15em;font-weight:bold;
+  text-align:center;cursor:pointer;touch-action:manipulation;
+  box-shadow:0 0 25px rgba(212,165,255,0.4),0 0 50px rgba(212,165,255,0.15),0 0 80px rgba(212,165,255,0.05);
+  position:relative;z-index:10;transition:all 0.2s;letter-spacing:2px;
 }
-@keyframes mobPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
-.mobile-start-btn:active{transform:scale(0.95)}
-@media(max-width:600px){.touch-controls{display:flex}.mobile-start-btn{display:block!important}}
+@keyframes startGradient{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+.mobile-start-btn:hover{transform:scale(1.03);box-shadow:0 0 35px rgba(212,165,255,0.6),0 0 70px rgba(212,165,255,0.2)}
+.mobile-start-btn:active{transform:scale(0.93);box-shadow:0 0 15px rgba(212,165,255,0.3)}
+
+/* === FOOTER === */
+.footer{font-size:0.6em;color:rgba(168,140,255,0.35);z-index:1;text-align:center;padding:2px;letter-spacing:1px}
+
+/* === RESPONSIVE === */
+@media(max-width:600px){
+  .touch-controls{display:flex}
+  .mobile-start-btn{display:block!important;width:85%;max-width:250px}
+  .touch-btn{width:46px;height:46px;font-size:1.1em}
+  .left-zone,.right-zone{height:75px}
+}
+@media(min-width:601px){
+  .touch-controls{display:none!important}
+  .mobile-start-btn{display:none!important}
+}
 </style>
 </head>
 <body>
@@ -125,7 +232,7 @@ canvas{border:2px solid #a88cff;border-radius:8px;box-shadow:0 0 20px rgba(168,1
     <div class="touch-btn touch-bomb" id="tBomb">💣</div>
     <div class="touch-btn" id="tRight">➡️</div>
   </div>
-  <div class="mobile-start-btn" id="mobileStart">▶ タップしてスタート ◀</div>
+  <button class="mobile-start-btn" id="mobileStart">▶ タップしてスタート ◀</button>
 </div>
 
 <div class="footer">💜 <span data-i18n="for">For</span> ロドリンお兄ちゃん 💜</div>
@@ -693,85 +800,166 @@ function draw(){
   
   // --- OVERLAY ---
   if(state===STATE.menu){
-    ctx.fillStyle='rgba(0,0,0,0.65)';ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='rgba(0,0,0,0.7)';ctx.fillRect(0,0,W,H);
     
-    // Title
+    // Scanning line effect
+    ctx.fillStyle=`rgba(168,140,255,${0.02+0.01*Math.sin(gameTime/60)})`;
+    ctx.fillRect(0,(gameTime*2)%H,W,2);
+    
+    // Decorative grid lines
+    ctx.strokeStyle='rgba(168,140,255,0.04)';
+    ctx.lineWidth=1;
+    for(let i=0;i<W;i+=30){
+      ctx.beginPath();ctx.moveTo(i+Math.sin(gameTime/100+i)*3,0);
+      ctx.lineTo(i+Math.sin(gameTime/100+i)*3,H);ctx.stroke();
+    }
+    
+    // Floating particles
+    for(let i=0;i<8;i++){
+      const px=(W/2-150+i*40+Math.sin(gameTime/100+i*2)*20);
+      const py=H/2-20+Math.sin(gameTime/80+i*3)*30;
+      ctx.fillStyle=`rgba(212,165,255,${0.05+0.05*Math.sin(gameTime/50+i)})`;
+      ctx.beginPath();ctx.arc(px,py,2+Math.sin(gameTime/60+i)*1,0,Math.PI*2);ctx.fill();
+    }
+    
+    // Title with mega glow
+    const titleGlow=Math.sin(gameTime/100)*8;
     ctx.fillStyle='#d4a5ff';
-    ctx.font='bold 26px "Courier New",monospace';
+    ctx.font='bold 28px "Courier New",monospace';
     ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.shadowColor='#d4a5ff';ctx.shadowBlur=25;
-    ctx.fillText('🦋 グラムちゃん 👾',W/2,H/2-65);
+    ctx.shadowColor='#d4a5ff';ctx.shadowBlur=30+titleGlow;
+    ctx.fillText('🦋 グラムちゃん 👾',W/2,H/2-70);
+    // Second pass for extra glow
+    ctx.shadowColor='#ff6b9d';ctx.shadowBlur=50+titleGlow*1.5;
+    ctx.fillStyle='rgba(255,107,157,0.1)';
+    ctx.fillText('🦋 グラムちゃん 👾',W/2,H/2-70);
     ctx.shadowBlur=0;
     
-    // Start button - BIG ANIMATED
-    const btnPulse=Math.sin(gameTime/120)*6;
-    ctx.font='bold 22px "Courier New",monospace';
-    ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillStyle='rgba(212,165,255,0.15)';
+    // Subtitle
+    ctx.fillStyle='rgba(168,140,255,0.5)';
+    ctx.font='11px "Courier New",monospace';
+    ctx.fillText('CYBER INVADER',W/2,H/2-43);
+    
+    // Start button - CYBER GLOW
+    const btnScale=1+Math.sin(gameTime/120)*0.04;
+    const btnPulse=Math.sin(gameTime/120)*8;
+    ctx.save();
+    ctx.translate(W/2,H/2-8);
+    ctx.scale(btnScale,btnScale);
+    // Outer glow layers
+    ctx.shadowColor='#ff6b9d';ctx.shadowBlur=40+btnPulse;
+    ctx.fillStyle='rgba(255,107,157,0.08)';
+    ctx.roundRect(-160,-22,320,44,22);ctx.fill();
+    // Border
     ctx.shadowBlur=0;
-    ctx.roundRect(W/2-145,H/2-40,290,50,25);ctx.fill();
-    ctx.strokeStyle='rgba(255,107,157,0.5)';ctx.lineWidth=2;
-    ctx.roundRect(W/2-145,H/2-40,290,50,25);ctx.stroke();
-    ctx.fillStyle='#ff6b9d';
+    ctx.strokeStyle=`rgba(255,107,157,${0.5+0.2*Math.sin(gameTime/120)})`;
+    ctx.lineWidth=2;
+    ctx.roundRect(-160,-22,320,44,22);ctx.stroke();
+    // Inner glow
+    ctx.fillStyle='rgba(212,165,255,0.04)';
+    ctx.roundRect(-158,-20,316,40,20);ctx.fill();
+    // Text
+    ctx.fillStyle='#fff';
     ctx.shadowColor='#ff6b9d';ctx.shadowBlur=25+btnPulse;
-    ctx.font='bold 22px "Courier New",monospace';
-    ctx.fillText(t('start'),W/2,H/2-16);
+    ctx.font='bold 20px "Courier New",monospace';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(t('start'),0,2);
+    ctx.restore();
     ctx.shadowBlur=0;
     
-    // Controls visual
-    ctx.fillStyle='rgba(168,140,255,0.6)';
-    ctx.font='13px "Courier New",monospace';
-    ctx.fillText(t('controls'),W/2,H/2+20);
-    
-    // Animated controls
+    // Controls visual with cyber style
     const cx=W/2;
     ctx.textAlign='center';ctx.textBaseline='middle';
-    // Move hint with glowing border
-    const mvY=H/2+60+Math.sin(gameTime/120)*5;
-    ctx.shadowColor='#ff6b9d';ctx.shadowBlur=20;
-    ctx.fillStyle='#ff6b9d';
-    ctx.font='bold 18px "Courier New",monospace';
-    // Background box
-    ctx.fillStyle='rgba(255,107,157,0.12)';
-    ctx.roundRect(cx-130,mvY-14,260,28,14);ctx.fill();
-    ctx.fillStyle='#ff6b9d';
-    ctx.font='bold 18px "Courier New",monospace';
-    ctx.fillText('← [ ← ]  → [ → ]  MOVE',cx,mvY+4);
+    
+    // Move hint
+    const mvY=H/2+55+Math.sin(gameTime/120)*3;
+    ctx.shadowColor='#d4a5ff';ctx.shadowBlur=15;
+    ctx.fillStyle='rgba(212,165,255,0.08)';
+    ctx.roundRect(cx-130,mvY-12,260,24,12);ctx.fill();
+    ctx.strokeStyle='rgba(212,165,255,0.2)';ctx.lineWidth=1;
+    ctx.roundRect(cx-130,mvY-12,260,24,12);ctx.stroke();
     ctx.shadowBlur=0;
-    // Fire hint with glowing border
-    const fiY=H/2+90+Math.sin(gameTime/120+1)*5;
-    ctx.shadowColor='#d4a5ff';ctx.shadowBlur=20;
-    ctx.fillStyle='rgba(212,165,255,0.12)';
-    ctx.roundRect(cx-120,fiY-14,240,28,14);ctx.fill();
     ctx.fillStyle='#d4a5ff';
-    ctx.font='bold 18px "Courier New",monospace';
-    ctx.fillText('[ SPACE / 🔥 TAP ]  FIRE!',cx,fiY+4);
+    ctx.font='bold 15px "Courier New",monospace';
+    ctx.fillText('⬅️  DRAG LEFT ZONE  ➡️',cx,mvY+2);
+    
+    // Fire hint
+    const fiY=H/2+82+Math.sin(gameTime/120+1)*3;
+    ctx.shadowColor='#ff6b9d';ctx.shadowBlur=15;
+    ctx.fillStyle='rgba(255,107,157,0.08)';
+    ctx.roundRect(cx-120,fiY-12,240,24,12);ctx.fill();
+    ctx.strokeStyle='rgba(255,107,157,0.2)';ctx.lineWidth=1;
+    ctx.roundRect(cx-120,fiY-12,240,24,12);ctx.stroke();
+    ctx.shadowBlur=0;
+    ctx.fillStyle='#ff6b9d';
+    ctx.font='bold 15px "Courier New",monospace';
+    ctx.fillText('🔥  TAP RIGHT ZONE TO FIRE  🔥',cx,fiY+2);
+    
+    // Lives show with glow
+    ctx.font='13px "Courier New",monospace';
+    ctx.fillStyle='#ff1744';
+    ctx.shadowColor='#ff1744';ctx.shadowBlur=10;
+    ctx.fillText('❤️  ❤️  ❤️',W/2,fiY+30);
     ctx.shadowBlur=0;
     
-    // Lives show
-    ctx.font='12px "Courier New",monospace';
-    ctx.fillStyle='#888';
-    ctx.fillText('❤️❤️❤️',W/2,H/2+80);
+    // Version water
+    ctx.fillStyle='rgba(168,140,255,0.15)';
+    ctx.font='9px "Courier New",monospace';
+    ctx.fillText('v2.0 CYBER EDITION',W/2,H-10);
   }
   
   if(state===STATE.gameover){
-    ctx.fillStyle='rgba(0,0,0,0.75)';ctx.fillRect(0,0,W,H);
-    ctx.fillStyle='#ff1744';
-    ctx.font='bold 34px "Courier New",monospace';
-    ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.shadowColor='#ff1744';ctx.shadowBlur=25;
-    ctx.fillText(t('gameover'),W/2,H/2-35);
-    ctx.shadowBlur=0;
-    ctx.font='18px "Courier New",monospace';
-    ctx.fillStyle='#d4a5ff';
-    ctx.fillText(t('score')+': '+Math.floor(score),W/2,H/2+10);
-    ctx.font='14px "Courier New",monospace';
-    ctx.fillStyle='#a88cff';
-    const pulse2=Math.sin(gameTime/150)*5;
-    ctx.shadowColor='#a88cff';ctx.shadowBlur=10+pulse2;
-    ctx.fillText(t('restart'),W/2,H/2+42);
-    ctx.shadowBlur=0;
-  }
+      ctx.fillStyle='rgba(0,0,0,0.8)';ctx.fillRect(0,0,W,H);
+    
+      // Red glitch lines
+      ctx.strokeStyle='rgba(255,23,68,0.15)';
+      ctx.lineWidth=2;
+      for(let i=0;i<5;i++){
+        const gy=Math.random()*H;
+        ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke();
+      }
+    
+      // GAME OVER glow
+      const goPulse=Math.sin(gameTime/80)*12;
+      ctx.fillStyle='#ff1744';
+      ctx.font='bold 36px "Courier New",monospace';
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.shadowColor='#ff1744';ctx.shadowBlur=40+goPulse;
+      ctx.fillText(t('gameover'),W/2+Math.random()*3-1.5,H/2-40+Math.random()*3-1.5);
+      // Second layer
+      ctx.shadowColor='#ff6b9d';ctx.shadowBlur=60+goPulse;
+      ctx.fillStyle='rgba(255,107,157,0.15)';
+      ctx.fillText(t('gameover'),W/2+Math.random()*2-1,H/2-40+Math.random()*2-1);
+      ctx.shadowBlur=0;
+    
+      // Score with golden glow
+      ctx.font='bold 22px "Courier New",monospace';
+      ctx.fillStyle='#ffd700';
+      ctx.shadowColor='#ffd700';ctx.shadowBlur=20;
+      ctx.fillText(t('score')+': '+Math.floor(score),W/2,H/2+10);
+      ctx.shadowBlur=0;
+    
+      // High Score
+      if(score>highScore){
+        ctx.font='bold 16px "Courier New",monospace';
+        ctx.fillStyle='#76ff03';
+        ctx.shadowColor='#76ff03';ctx.shadowBlur=15;
+        ctx.fillText('★ NEW HIGH SCORE! ★',W/2,H/2+35);
+        ctx.shadowBlur=0;
+      }
+    
+      // Restart hint with pulse
+      const pulse2=Math.sin(gameTime/120)*8;
+      ctx.fillStyle='rgba(212,165,255,0.08)';
+      ctx.roundRect(W/2-110,H/2+52,220,32,16);ctx.fill();
+      ctx.strokeStyle='rgba(212,165,255,0.3)';ctx.lineWidth=1;
+      ctx.roundRect(W/2-110,H/2+52,220,32,16);ctx.stroke();
+      ctx.fillStyle='#d4a5ff';
+      ctx.font='bold 14px "Courier New",monospace';
+      ctx.shadowColor='#d4a5ff';ctx.shadowBlur=10+pulse2;
+      ctx.fillText(t('restart'),W/2,H/2+68);
+      ctx.shadowBlur=0;
+    }
   
   if(state===STATE.bossIntro){
     ctx.fillStyle='rgba(0,0,0,0.5)';ctx.fillRect(0,0,W,H);
@@ -884,21 +1072,21 @@ zoneLeft.addEventListener('touchstart',e=>{
   zoneCenterX=r.left+r.width/2;
   zoneCenterY=r.top+r.height/2;
   movePlayerByGesture(t.clientX);
-  if(state===STATE.menu||state===STATE.gameover){initAudio();state=STATE.playing;resetGame()}
-});
+  if(state===STATE.menu||state===STATE.gameover)startGame();
+},{passive:false});
 zoneLeft.addEventListener('touchmove',e=>{
   e.preventDefault();
   for(let t of e.changedTouches)
     if(t.identifier===zoneTouchId)movePlayerByGesture(t.clientX);
-});
+},{passive:false});
 zoneLeft.addEventListener('touchend',e=>{
   e.preventDefault();zoneTouchId=null;
   knob.style.transform='translate(0,0)';
   player.dx*=0.5;
-});
+},{passive:false});
 zoneLeft.addEventListener('touchcancel',e=>{
   zoneTouchId=null;knob.style.transform='translate(0,0)';
-});
+},{passive:false});
 
 function movePlayerByGesture(tx){
   const r=zoneLeft.getBoundingClientRect();
@@ -915,34 +1103,34 @@ zoneRight.addEventListener('touchstart',e=>{
   fireTouchId=e.changedTouches[0].identifier;
   fireRing.classList.add('pressed');
   keys['Space']=true;
-  if(state===STATE.menu||state===STATE.gameover){state=STATE.playing;resetGame()}
-});
+  if(state===STATE.menu||state===STATE.gameover)startGame();
+},{passive:false});
 zoneRight.addEventListener('touchend',e=>{
   e.preventDefault();fireTouchId=null;
   fireRing.classList.remove('pressed');
   keys['Space']=false;
-});
+},{passive:false});
 zoneRight.addEventListener('touchcancel',e=>{
   fireTouchId=null;fireRing.classList.remove('pressed');keys['Space']=false;
-});
+},{passive:false});
 
 // Legacy button support (backward compat)
-document.getElementById('tLeft').addEventListener('touchstart',e=>{e.preventDefault();keys['ArrowLeft']=true});
-document.getElementById('tLeft').addEventListener('touchend',e=>{e.preventDefault();keys['ArrowLeft']=false});
-document.getElementById('tRight').addEventListener('touchstart',e=>{e.preventDefault();keys['ArrowRight']=true});
-document.getElementById('tRight').addEventListener('touchend',e=>{e.preventDefault();keys['ArrowRight']=false});
+document.getElementById('tLeft').addEventListener('touchstart',e=>{e.preventDefault();keys['ArrowLeft']=true},{passive:false});
+document.getElementById('tLeft').addEventListener('touchend',e=>{e.preventDefault();keys['ArrowLeft']=false},{passive:false});
+document.getElementById('tRight').addEventListener('touchstart',e=>{e.preventDefault();keys['ArrowRight']=true},{passive:false});
+document.getElementById('tRight').addEventListener('touchend',e=>{e.preventDefault();keys['ArrowRight']=false},{passive:false});
 document.getElementById('tFire').addEventListener('touchstart',e=>{
   e.preventDefault();initAudio();keys['Space']=true;
-  if(state===STATE.menu||state===STATE.gameover)canvas.dispatchEvent(new Event('click'));
-});
-document.getElementById('tFire').addEventListener('touchend',e=>{e.preventDefault();keys['Space']=false});
+  if(state===STATE.menu||state===STATE.gameover)startGame();
+},{passive:false});
+document.getElementById('tFire').addEventListener('touchend',e=>{e.preventDefault();keys['Space']=false},{passive:false});
 
 // Auto-fire toggle
 document.getElementById('tAuto').addEventListener('click',()=>{
   autoFire=!autoFire;
   document.getElementById('tAuto').classList.toggle('active',autoFire);
 });
-document.getElementById('tAuto').addEventListener('touchstart',e=>{e.preventDefault();document.getElementById('tAuto').click()});
+document.getElementById('tAuto').addEventListener('touchstart',e=>{e.preventDefault();document.getElementById('tAuto').click()},{passive:false});
 
 // Bomb special attack
 document.getElementById('tBomb').addEventListener('click',()=>{
@@ -959,7 +1147,7 @@ document.getElementById('tBomb').addEventListener('click',()=>{
   updateUI();
   updateBombUI();
 });
-document.getElementById('tBomb').addEventListener('touchstart',e=>{e.preventDefault();document.getElementById('tBomb').click()});
+document.getElementById('tBomb').addEventListener('touchstart',e=>{e.preventDefault();document.getElementById('tBomb').click()},{passive:false});
 
 function updateBombUI(){
   document.getElementById('tBomb').textContent='💣'+bombCount;
@@ -968,17 +1156,18 @@ function updateBombUI(){
 
 // Mobile start button
 const mobileStartBtn=document.getElementById('mobileStart');
-mobileStartBtn.addEventListener('click',()=>{
+function startGame(){
   initAudio();
   if(state===STATE.menu){state=STATE.playing;resetGame();}
   else if(state===STATE.gameover){state=STATE.menu;resetGame();}
-});
-mobileStartBtn.addEventListener('touchstart',e=>{e.preventDefault();mobileStartBtn.click()});
+}
+mobileStartBtn.addEventListener('click',startGame);
+mobileStartBtn.addEventListener('touchstart',e=>{e.preventDefault();startGame();},{passive:false});
 
 // Touch canvas for PC fallback
 canvas.addEventListener('touchstart',e=>{
   e.preventDefault();initAudio();
-  if(state===STATE.menu||state===STATE.gameover){canvas.dispatchEvent(new Event('click'));return}
+  if(state===STATE.menu||state===STATE.gameover){startGame();return}
   const r=canvas.getBoundingClientRect(),sx=W/r.width;
   mouseX=(e.touches[0].clientX-r.left)*sx;
 });
