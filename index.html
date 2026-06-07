@@ -89,7 +89,7 @@ canvas{border:2px solid rgba(168,140,255,0.5);border-radius:10px;box-shadow:0 0 
 /* Mobile responsive */
 @media(max-width:600px){
   .touch-controls{display:flex}
-  .mobile-start-btn{display:block!important;width:85%;max-width:250px}
+  .mobile-start-btn{width:85%;max-width:250px}
   .touch-btn{width:44px;height:44px;font-size:1em}
   .left-zone,.right-zone{height:75px}
 }
@@ -529,7 +529,8 @@ function roundStroke(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.str
 
 // --- Update ---
 function update(){
-  if(state===STATE.menu||state===STATE.gameover){gameTime++;return}
+  if(state===STATE.menu||state===STATE.gameover){mobileStartBtn.style.display='block';gameTime++;return}
+  mobileStartBtn.style.display='none';
   gameTime++;frame++;
   if(state===STATE.bossIntro){if(gameTime%120===0){state=STATE.playing;spawnBoss();}return}
   
@@ -678,9 +679,9 @@ tBomb.addEventListener('click',function(){
 tBomb.addEventListener('touchstart',function(e){e.preventDefault();e.stopPropagation();if(bombCooldown>0||bombCount<=0)return;this.click()},{passive:false});
 
 // Start button
-const msBtn=document.getElementById('mobileStart');
-msBtn.addEventListener('click',startGame);
-msBtn.addEventListener('touchstart',function(e){e.preventDefault();e.stopPropagation();startGame()},{passive:false});
+const mobileStartBtn=document.getElementById('mobileStart');
+mobileStartBtn.addEventListener('click',startGame);
+mobileStartBtn.addEventListener('touchstart',function(e){e.preventDefault();e.stopPropagation();startGame()},{passive:false});
 
 // Canvas click (PC fallback)
 canvas.addEventListener('click',function(){initAudio();if(state===STATE.menu){state=STATE.playing;resetGame()}else if(state===STATE.gameover){state=STATE.menu;resetGame()}});
