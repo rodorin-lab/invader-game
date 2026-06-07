@@ -35,16 +35,49 @@ canvas{border:2px solid #a88cff;border-radius:8px;box-shadow:0 0 20px rgba(168,1
 .powerup-icon.active{opacity:1;border-color:#d4a5ff;box-shadow:0 0 12px rgba(212,165,255,0.5);animation:pulse 0.8s infinite}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
 .footer{font-size:0.65em;color:rgba(168,140,255,0.5);z-index:1;text-align:center;padding:3px}
-.touch-controls{display:none;gap:8px;justify-content:center;width:100%;max-width:400px;z-index:1}
+.touch-controls{display:flex;gap:6px;justify-content:center;width:100%;max-width:400px;z-index:1;flex-wrap:wrap}
+.touch-zone{
+  position:relative;border-radius:12px;border:2px solid rgba(168,140,255,0.3);
+  background:rgba(168,140,255,0.06);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;user-select:none;-webkit-user-select:none;
+  touch-action:none;overflow:hidden;
+}
+.left-zone{width:48%;height:64px}
+.right-zone{width:48%;height:64px}
+.zone-label{font-size:0.65em;color:rgba(168,140,255,0.5);pointer-events:none}
+.touch-joystick{font-size:1.5em;color:#d4a5ff;transition:transform 0.1s;pointer-events:none}
+.touch-fire-ring{
+  width:44px;height:44px;border-radius:50%;border:3px solid #ff6b9d;
+  display:flex;align-items:center;justify-content:center;font-size:1.5em;
+  background:rgba(255,107,157,0.15);box-shadow:0 0 15px rgba(255,107,157,0.3);
+  transition:all 0.1s;pointer-events:none;
+}
+.touch-fire-ring:active,.touch-fire-ring.pressed{transform:scale(0.9);background:rgba(255,107,157,0.4)}
+.touch-buttons-row{
+  display:flex;gap:6px;justify-content:center;width:100%;max-width:400px;
+}
 .touch-btn{
-  width:48px;height:48px;background:rgba(168,140,255,0.2);
+  width:48px;height:48px;background:rgba(168,140,255,0.25);
   border:2px solid rgba(168,140,255,0.5);border-radius:50%;
   display:flex;align-items:center;justify-content:center;
   font-size:1.1em;color:#d4a5ff;touch-action:none;cursor:pointer
 }
 .touch-btn:active{background:rgba(168,140,255,0.5);box-shadow:0 0 15px rgba(168,140,255,0.5)}
-.touch-fire{width:56px;height:56px;background:rgba(255,107,157,0.3);border-color:#ff6b9d;font-size:1.3em}
-@media(max-width:600px){.touch-controls{display:flex}.ui-panel{padding:4px}}
+.touch-fire{background:rgba(255,107,157,0.35);border-color:#ff6b9d;font-size:1.3em}
+.touch-auto{width:44px;height:44px;background:rgba(255,215,0,0.15);border-color:#ffd700;font-size:0.9em}
+.touch-auto.active{background:rgba(255,215,0,0.4);box-shadow:0 0 12px #ffd700}
+.touch-bomb{width:44px;height:44px;background:rgba(255,23,68,0.15);border-color:#ff1744;font-size:1em}
+.mobile-start-btn{
+  display:block;width:200px;padding:14px 0;margin:8px auto 4px;
+  background:linear-gradient(135deg,#ff6b9d,#d4a5ff);border:2px solid #d4a5ff;
+  border-radius:25px;color:#fff;font-size:1.1em;font-weight:bold;
+  text-align:center;cursor:pointer;touch-action:none;
+  box-shadow:0 0 20px rgba(212,165,255,0.5);
+  animation:mobPulse 1.5s ease infinite;
+}
+@keyframes mobPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.mobile-start-btn:active{transform:scale(0.95)}
+@media(max-width:600px){.touch-controls{display:flex}.mobile-start-btn{display:block!important}}
 </style>
 </head>
 <body>
@@ -76,10 +109,23 @@ canvas{border:2px solid #a88cff;border-radius:8px;box-shadow:0 0 20px rgba(168,1
   </div>
 
   <div class="touch-controls" id="touchControls">
+    <div class="touch-zone left-zone" id="zoneLeft">
+      <div class="zone-label">← DRAG →</div>
+      <div class="touch-joystick" id="joystickKnob">⬤</div>
+    </div>
+    <div class="touch-zone right-zone" id="zoneRight">
+      <div class="zone-label">TAP = FIRE!</div>
+      <div class="touch-fire-ring" id="fireRing">🔥</div>
+    </div>
+  </div>
+  <div class="touch-buttons-row">
     <div class="touch-btn" id="tLeft">⬅️</div>
+    <div class="touch-btn touch-auto" id="tAuto">🔄</div>
     <div class="touch-btn touch-fire" id="tFire">🔥</div>
+    <div class="touch-btn touch-bomb" id="tBomb">💣</div>
     <div class="touch-btn" id="tRight">➡️</div>
   </div>
+  <div class="mobile-start-btn" id="mobileStart">▶ タップしてスタート ◀</div>
 </div>
 
 <div class="footer">💜 <span data-i18n="for">For</span> ロドリンお兄ちゃん 💜</div>
@@ -282,6 +328,7 @@ function resetGame(){
   spawnWave();
   updateUI();
   updatePowerupUI();
+  bombCount=3;bombCooldown=0;updateBombUI();
   bgmStart();
 }
 
@@ -742,7 +789,11 @@ function draw(){
 // UPDATE
 // ============================================================
 function update(){
-  if(state===STATE.menu||state===STATE.gameover){gameTime++;return}
+  if(state===STATE.menu||state===STATE.gameover){
+    mobileStartBtn.style.display='block';
+    gameTime++;return
+  }
+  mobileStartBtn.style.display='none';
   gameTime++;frame++;
   
   if(state===STATE.bossIntro){
@@ -758,7 +809,7 @@ function update(){
   if(player.x>W-18)player.x=W-18;
   if(player.invincible>0)player.invincible--;
   if(player.shootCooldown>0)player.shootCooldown--;
-  if(keys['Space'])fireBullet();
+  if(keys['Space']||autoFire)fireBullet();
   
   moveEnemies();
   if(frame%Math.max(5,20-wave)===0)enemyShoot();
@@ -781,6 +832,8 @@ function update(){
     updateUI();spawnWave();
   }
   updateUI();
+  // Bomb cooldown
+  if(bombCooldown>0){bombCooldown--;if(bombCooldown%60===0)updateBombUI()}
 }
 
 // ============================================================
@@ -811,6 +864,69 @@ canvas.addEventListener('mousemove',e=>{
   mouseX=(e.clientX-r.left)*sx;
   if(state===STATE.playing)player.x+=(mouseX-player.x)*0.08;
 });
+let autoFire=false;
+let bombCount=3;
+let bombCooldown=0;
+
+// Modern touch controls - Dual Zone + Gesture
+const zoneLeft=document.getElementById('zoneLeft');
+const zoneRight=document.getElementById('zoneRight');
+const knob=document.getElementById('joystickKnob');
+const fireRing=document.getElementById('fireRing');
+let zoneTouchId=null, fireTouchId=null;
+let zoneCenterX=0, zoneCenterY=0;
+
+zoneLeft.addEventListener('touchstart',e=>{
+  e.preventDefault();
+  const t=e.changedTouches[0];
+  zoneTouchId=t.identifier;
+  const r=zoneLeft.getBoundingClientRect();
+  zoneCenterX=r.left+r.width/2;
+  zoneCenterY=r.top+r.height/2;
+  movePlayerByGesture(t.clientX);
+  if(state===STATE.menu||state===STATE.gameover){initAudio();state=STATE.playing;resetGame()}
+});
+zoneLeft.addEventListener('touchmove',e=>{
+  e.preventDefault();
+  for(let t of e.changedTouches)
+    if(t.identifier===zoneTouchId)movePlayerByGesture(t.clientX);
+});
+zoneLeft.addEventListener('touchend',e=>{
+  e.preventDefault();zoneTouchId=null;
+  knob.style.transform='translate(0,0)';
+  player.dx*=0.5;
+});
+zoneLeft.addEventListener('touchcancel',e=>{
+  zoneTouchId=null;knob.style.transform='translate(0,0)';
+});
+
+function movePlayerByGesture(tx){
+  const r=zoneLeft.getBoundingClientRect();
+  const relX=(tx-(r.left+r.width/2))/(r.width/2);
+  const clamped=Math.max(-1,Math.min(1,relX));
+  knob.style.transform=`translate(${clamped*20}px,0)`;
+  player.x+=clamped*player.speed*1.5;
+  if(player.x<18)player.x=18;
+  if(player.x>W-18)player.x=W-18;
+}
+
+zoneRight.addEventListener('touchstart',e=>{
+  e.preventDefault();initAudio();
+  fireTouchId=e.changedTouches[0].identifier;
+  fireRing.classList.add('pressed');
+  keys['Space']=true;
+  if(state===STATE.menu||state===STATE.gameover){state=STATE.playing;resetGame()}
+});
+zoneRight.addEventListener('touchend',e=>{
+  e.preventDefault();fireTouchId=null;
+  fireRing.classList.remove('pressed');
+  keys['Space']=false;
+});
+zoneRight.addEventListener('touchcancel',e=>{
+  fireTouchId=null;fireRing.classList.remove('pressed');keys['Space']=false;
+});
+
+// Legacy button support (backward compat)
 document.getElementById('tLeft').addEventListener('touchstart',e=>{e.preventDefault();keys['ArrowLeft']=true});
 document.getElementById('tLeft').addEventListener('touchend',e=>{e.preventDefault();keys['ArrowLeft']=false});
 document.getElementById('tRight').addEventListener('touchstart',e=>{e.preventDefault();keys['ArrowRight']=true});
@@ -820,6 +936,46 @@ document.getElementById('tFire').addEventListener('touchstart',e=>{
   if(state===STATE.menu||state===STATE.gameover)canvas.dispatchEvent(new Event('click'));
 });
 document.getElementById('tFire').addEventListener('touchend',e=>{e.preventDefault();keys['Space']=false});
+
+// Auto-fire toggle
+document.getElementById('tAuto').addEventListener('click',()=>{
+  autoFire=!autoFire;
+  document.getElementById('tAuto').classList.toggle('active',autoFire);
+});
+document.getElementById('tAuto').addEventListener('touchstart',e=>{e.preventDefault();document.getElementById('tAuto').click()});
+
+// Bomb special attack
+document.getElementById('tBomb').addEventListener('click',()=>{
+  if(bombCooldown>0||bombCount<=0)return;
+  bombCount--;bombCooldown=300;
+  initAudio();
+  // Screen clear - damage all enemies + boss
+  for(let e of enemies){
+    if(e.alive){e.alive=false;spawnParticles(e.x,e.y,'#ff1744',15,5);score+=e.type.points;}
+  }
+  if(boss){boss.hp-=10;spawnParticles(boss.x,boss.y,'#ff1744',30,8);}
+  screenShake=30;
+  sfxExplode();
+  updateUI();
+  updateBombUI();
+});
+document.getElementById('tBomb').addEventListener('touchstart',e=>{e.preventDefault();document.getElementById('tBomb').click()});
+
+function updateBombUI(){
+  document.getElementById('tBomb').textContent='💣'+bombCount;
+  document.getElementById('tBomb').style.opacity=bombCooldown>0?'0.4':'1';
+}
+
+// Mobile start button
+const mobileStartBtn=document.getElementById('mobileStart');
+mobileStartBtn.addEventListener('click',()=>{
+  initAudio();
+  if(state===STATE.menu){state=STATE.playing;resetGame();}
+  else if(state===STATE.gameover){state=STATE.menu;resetGame();}
+});
+mobileStartBtn.addEventListener('touchstart',e=>{e.preventDefault();mobileStartBtn.click()});
+
+// Touch canvas for PC fallback
 canvas.addEventListener('touchstart',e=>{
   e.preventDefault();initAudio();
   if(state===STATE.menu||state===STATE.gameover){canvas.dispatchEvent(new Event('click'));return}
